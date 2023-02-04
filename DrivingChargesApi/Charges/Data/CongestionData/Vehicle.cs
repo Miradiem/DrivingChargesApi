@@ -4,6 +4,10 @@
     {
         public int VehicleId { get; set; }
 
-        public Dictionary<string, double> VehicleRates { get; set; }
+        public string Type { get; set; }
+
+        public double Rate { get; set; }
+
+        public int PeriodId { get; set; }
     }
 }
