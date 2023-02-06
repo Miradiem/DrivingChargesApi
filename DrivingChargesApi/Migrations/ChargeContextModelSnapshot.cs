@@ -35,11 +35,20 @@ namespace DrivingChargesApi.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("CityId");
 
                     b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            CityId = 1,
+                            Coefficient = 1.0,
+                            Name = "London"
+                        });
                 });
 
             modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Congestion", b =>
@@ -56,11 +65,25 @@ namespace DrivingChargesApi.Migrations
                     b.Property<double>("Coefficient")
                         .HasColumnType("float");
 
+                    b.Property<string>("Validity")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.HasKey("CongestionId");
 
                     b.HasIndex("CityId");
 
                     b.ToTable("Congestions");
+
+                    b.HasData(
+                        new
+                        {
+                            CongestionId = 1,
+                            CityId = 1,
+                            Coefficient = 1.0,
+                            Validity = "Weekly"
+                        });
                 });
 
             modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Period", b =>
@@ -83,15 +106,29 @@ namespace DrivingChargesApi.Migrations
                     b.Property<TimeSpan>("Start")
                         .HasColumnType("time");
 
-                    b.Property<string>("Validity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("PeriodId");
 
                     b.HasIndex("CongestionId");
 
                     b.ToTable("Periods");
+
+                    b.HasData(
+                        new
+                        {
+                            PeriodId = 1,
+                            Coefficient = 1.0,
+                            CongestionId = 1,
+                            End = new TimeSpan(0, 12, 0, 0, 0),
+                            Start = new TimeSpan(0, 7, 0, 0, 0)
+                        },
+                        new
+                        {
+                            PeriodId = 2,
+                            Coefficient = 1.0,
+                            CongestionId = 1,
+                            End = new TimeSpan(0, 19, 0, 0, 0),
+                            Start = new TimeSpan(0, 12, 0, 0, 0)
+                        });
                 });
 
             modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Vehicle", b =>
@@ -110,13 +147,58 @@ namespace DrivingChargesApi.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("VehicleId");
 
                     b.HasIndex("PeriodId");
 
                     b.ToTable("Vehicles");
+
+                    b.HasData(
+                        new
+                        {
+                            VehicleId = 1,
+                            PeriodId = 1,
+                            Rate = 2.0,
+                            Type = "Car"
+                        },
+                        new
+                        {
+                            VehicleId = 2,
+                            PeriodId = 1,
+                            Rate = 3.0,
+                            Type = "Van"
+                        },
+                        new
+                        {
+                            VehicleId = 3,
+                            PeriodId = 1,
+                            Rate = 1.0,
+                            Type = "Motorbike"
+                        },
+                        new
+                        {
+                            VehicleId = 4,
+                            PeriodId = 2,
+                            Rate = 2.5,
+                            Type = "Car"
+                        },
+                        new
+                        {
+                            VehicleId = 5,
+                            PeriodId = 2,
+                            Rate = 3.5,
+                            Type = "Van"
+                        },
+                        new
+                        {
+                            VehicleId = 6,
+                            PeriodId = 2,
+                            Rate = 1.0,
+                            Type = "Motorbike"
+                        });
                 });
 
             modelBuilder.Entity("DrivingChargesApi.Charges.Data.LowEmissionData.LowEmission", b =>

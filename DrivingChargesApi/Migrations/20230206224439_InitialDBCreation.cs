@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace DrivingChargesApi.Migrations
 {
     /// <inheritdoc />
@@ -17,7 +19,7 @@ namespace DrivingChargesApi.Migrations
                 {
                     CityId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Coefficient = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
@@ -31,6 +33,7 @@ namespace DrivingChargesApi.Migrations
                 {
                     CongestionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Validity = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Coefficient = table.Column<double>(type: "float", nullable: false),
                     CityId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -93,7 +96,6 @@ namespace DrivingChargesApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Start = table.Column<TimeSpan>(type: "time", nullable: false),
                     End = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Validity = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Coefficient = table.Column<double>(type: "float", nullable: false),
                     CongestionId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -114,7 +116,7 @@ namespace DrivingChargesApi.Migrations
                 {
                     VehicleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Rate = table.Column<double>(type: "float", nullable: false),
                     PeriodId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -127,6 +129,38 @@ namespace DrivingChargesApi.Migrations
                         principalTable: "Periods",
                         principalColumn: "PeriodId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Cities",
+                columns: new[] { "CityId", "Coefficient", "Name" },
+                values: new object[] { 1, 1.0, "London" });
+
+            migrationBuilder.InsertData(
+                table: "Congestions",
+                columns: new[] { "CongestionId", "CityId", "Coefficient", "Validity" },
+                values: new object[] { 1, 1, 1.0, "Weekly" });
+
+            migrationBuilder.InsertData(
+                table: "Periods",
+                columns: new[] { "PeriodId", "Coefficient", "CongestionId", "End", "Start" },
+                values: new object[,]
+                {
+                    { 1, 1.0, 1, new TimeSpan(0, 12, 0, 0, 0), new TimeSpan(0, 7, 0, 0, 0) },
+                    { 2, 1.0, 1, new TimeSpan(0, 19, 0, 0, 0), new TimeSpan(0, 12, 0, 0, 0) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Vehicles",
+                columns: new[] { "VehicleId", "PeriodId", "Rate", "Type" },
+                values: new object[,]
+                {
+                    { 1, 1, 2.0, "Car" },
+                    { 2, 1, 3.0, "Van" },
+                    { 3, 1, 1.0, "Motorbike" },
+                    { 4, 2, 2.5, "Car" },
+                    { 5, 2, 3.5, "Van" },
+                    { 6, 2, 1.0, "Motorbike" }
                 });
 
             migrationBuilder.CreateIndex(

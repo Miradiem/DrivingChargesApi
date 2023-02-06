@@ -8,12 +8,10 @@
 
         public TimeSpan End { get; set; }
 
-        public string Validity { get; set; }
-
         public double Coefficient { get; set; }
 
         public int CongestionId { get; set; }
 
-        public List<Vehicle> Vehicles { get; set; }
+        public List<Vehicle> Vehicles { get; set; } = new();
     }
 }
