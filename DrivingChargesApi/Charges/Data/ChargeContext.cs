@@ -11,6 +11,8 @@ namespace DrivingChargesApi.Charges.Data
         {
         }
 
+        public DbSet<UserData> Users { get; set; }
+
         public DbSet<City> Cities { get; set; }
 
         public DbSet<Congestion> Congestions { get; set; }
@@ -26,10 +28,12 @@ namespace DrivingChargesApi.Charges.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            SeedWithData(modelBuilder);
+            SeedWithRandomUserData(modelBuilder);
+            SeedCongestion(modelBuilder);
+            
         }
 
-        private static void SeedWithData(ModelBuilder modelBuilder)
+        private static void SeedCongestion(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<City>().HasData(
                 new City
@@ -42,7 +46,7 @@ namespace DrivingChargesApi.Charges.Data
                 new Congestion
                 {
                     CongestionId = 1,
-                    Validity = "Weekly",
+                    Type = "WeekDay",
                     Coefficient = 1,
                     CityId = 1
                 });
@@ -108,6 +112,36 @@ namespace DrivingChargesApi.Charges.Data
                    Rate = 1,
                    PeriodId = 2
                });
+        }
+
+        private static void SeedWithRandomUserData(ModelBuilder modelBuilder)
+        {
+            var random = new Random();
+            var vehicles = new List<string>()
+            {
+                "Car",
+                "Van",
+                "Motorbike"
+            };
+            var start = new DateTime(2023, 01, 01, 00, 00, 00);
+            var end = new DateTime(2023, 01, 31, 23, 59, 58);
+            
+            for (int userId = 1; userId < 100; userId++)
+            {
+                var enterRange = (int)(end - start).TotalSeconds;
+                var entered = start.AddSeconds(random.Next(enterRange));
+
+                var leaveRange = (int)(end - entered.AddSeconds(1)).TotalSeconds;
+                var left = entered.AddSeconds(random.Next(leaveRange));
+
+                modelBuilder.Entity<UserData>().HasData(new UserData
+                {
+                    UserDataId = userId,
+                    Entered = entered,
+                    Left = left,
+                    Vehicle = vehicles[random.Next(vehicles.Count)]
+                });
+            }
         }
     }
 }
