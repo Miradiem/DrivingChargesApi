@@ -1,6 +1,7 @@
 ﻿using DrivingChargesApi.Charges.Data;
 using DrivingChargesApi.Charges.Data.CongestionData;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DrivingChargesApi.Charges.Congestions
 {
@@ -56,103 +57,104 @@ namespace DrivingChargesApi.Charges.Congestions
                 VehicleRate(vehicle);
 
         //###################
-        public bool WeekEnds(DateTime entered, DateTime left) =>
+        public IEnumerable<DateTime> WeekEnds(DateTime entered, DateTime left) =>
             Enumerable.Range(0, (int)(left - entered).TotalDays + 1)
             .Select(number => entered.AddDays(number))
             .Where(day => day.DayOfWeek == DayOfWeek.Saturday ||
-                          day.DayOfWeek == DayOfWeek.Sunday)
-            .Any();
+                          day.DayOfWeek == DayOfWeek.Sunday);
 
-        public bool WeekDays(DateTime entered, DateTime left) =>
+        public IEnumerable<DateTime> WeekDays(DateTime entered, DateTime left) =>
             Enumerable.Range(0, (int)(left - entered).TotalDays + 1)
             .Select(number => entered.AddDays(number))
             .Where(day => day.DayOfWeek != DayOfWeek.Saturday ||
-                          day.DayOfWeek != DayOfWeek.Sunday)
-            .Any();
+                          day.DayOfWeek != DayOfWeek.Sunday);
 
-
-        public List<Period> Periods(string cityName, string congestionType) =>
-            _context.Cities
-                .Include(city => city.Congestions)
-                    .ThenInclude(congestion => congestion.Periods)
-                .Where(city => city.Name == cityName)
-                .SelectMany(city => city.Congestions)
-                .Where(congestion => congestion.Type == congestionType)
-                .SelectMany(congestion => congestion.Periods)
-                .ToList();
-
-        public Dictionary<string, List<Period>> TotalTimeTest(string cityName, string vehicle, DateTime entered, DateTime left)
+        public Dictionary<string, List<Period>> PeriodData(string cityName)
         {
-            var totalTime = new List<ChargedTimeData>();
-            var periods = new Dictionary<string, List<Period>>();
+            var periodData = _context.Cities
+            .Include(city => city.Congestions)
+                .ThenInclude(congestion => congestion.Periods)
+            .Where(city => city.Name == cityName)
+            .SelectMany(city => city.Congestions)
+            .ToDictionary(
+                congestion => congestion.Type,
+                congestion => congestion.Periods.ToList());
+
+            return periodData;
+        }
+
+        public List<ChargedTimeData> WeekDayPeriods(string cityName, string vehicle, DateTime entered, DateTime left, List<Period> periods, string congestionType)
+        {
+            var chargedTime = new List<ChargedTimeData>();
             
-            if (WeekDays(entered, left) is true)
+            foreach (var period in periods)
             {
-                periods.Add("WeekDay", Periods(cityName, "WeekDay"));
-            }
-            if (WeekEnds(entered, left) is true)
-            {
-                periods.Add("WeekEnd", Periods(cityName, "WeekEnd"));
-            }
+                var timeSpent = TimeSpentWeekDay(entered, left, period.Start, period.End);
+                var chargeAmount = ChargeAmount(cityName, congestionType, period.PeriodId, vehicle);
 
-            return periods;
-        }
-
-        public List<ChargedTimeData> WeekDayData(string cityName, string vehicle, DateTime entered, DateTime left)
-        {
-            var weekDayData = new List<ChargedTimeData>();
-            var weekDayPeriods = Periods(cityName, "WeekDay");
-
-            foreach (var period in weekDayPeriods)
-            {
-                weekDayData.Add(new ChargedTimeData()
+                chargedTime.Add(new ChargedTimeData
                 {
-                    CongestionType = "WeekDay",
+                    CongestionType = congestionType,
                     PeriodStart = period.Start,
-                    TimeSpent = TimeSpentWeekDay(entered, left, period.Start, period.End),
-                    ChargeAmount = ChargeAmount(cityName, "WeekDay", period.PeriodId, vehicle)
+                    TimeSpent = timeSpent,
+                    ChargeAmount = chargeAmount
                 });
             }
 
-            return weekDayData;
+            return chargedTime;
         }
 
-        public List<ChargedTimeData> WeekEndData(string cityName, string vehicle, DateTime entered, DateTime left)
-        {
-            var weekEndData = new List<ChargedTimeData>();
-            var weekEndPeriods = Periods(cityName, "WeekEnd");
-
-            foreach (var period in weekEndPeriods)
-            {
-                weekEndData.Add(new ChargedTimeData()
-                {
-                    CongestionType = "WeekEnd",
-                    PeriodStart = period.Start,
-                    TimeSpent = TimeSpentWeekEnd(entered, left, period.Start, period.End),
-                    ChargeAmount = ChargeAmount(cityName, "WeekEnd", period.PeriodId, vehicle)
-                });
-            }
-
-            return weekEndData;
-        }
-
-
-
-        public async Task<CongestionResult> GetCongestionCharge(string cityName, string vehicle, DateTime entered, DateTime left)
+        public List<ChargedTimeData> WeekDayPeriods(string cityName, string vehicle, DateTime entered, DateTime left, List<Period> periods, string congestionType)
         {
             var chargedTime = new List<ChargedTimeData>();
 
-            var weekDay = WeekDayData(cityName, vehicle, entered, left);
-            var weekEnd = WeekEndData(cityName, vehicle, entered, left);
-            if (WeekDays(entered, left).Any())
+            foreach (var period in periods)
             {
-                chargedTime = Enumerable.Concat(chargedTime, weekDay).ToList();
+                var timeSpent = TimeSpentWeekDay(entered, left, period.Start, period.End);
+                var chargeAmount = ChargeAmount(cityName, congestionType, period.PeriodId, vehicle);
+
+                chargedTime.Add(new ChargedTimeData
+                {
+                    CongestionType = congestionType,
+                    PeriodStart = period.Start,
+                    TimeSpent = timeSpent,
+                    ChargeAmount = chargeAmount
+                });
             }
 
-            if (WeekEnds(entered, left).Any())
+            return chargedTime;
+        }
+
+        public List<ChargedTimeData> ChargedTime(string cityName, string vehicle, DateTime entered, DateTime left)
+        {
+            var chargedTime = new List<ChargedTimeData>();
+            var periodData = PeriodData(cityName);
+           
+            if (WeekDays(entered, left).Any())
             {
-                chargedTime = Enumerable.Concat(chargedTime, weekEnd).ToList();
+                var congestionType = "WeekDay";
+                var weekDayPeriods = WeekDayPeriods(cityName, vehicle, entered, left, periodData["WeekDay"], congestionType);
+                chargedTime = Enumerable.Concat(chargedTime, weekDayPeriods).ToList();
             }
+
+            if (WeekDays(entered, left).Any())
+            {
+                var congestionType = "WeekDay";
+                var weekDayPeriods = WeekDayPeriods(cityName, vehicle, entered, left, periodData["WeekDay"], congestionType);
+                chargedTime = Enumerable.Concat(chargedTime, weekDayPeriods).ToList();
+            }
+
+            return chargedTime;
+        }
+            
+            
+      
+
+
+
+        public CongestionResult GetCongestionCharge(string cityName, string vehicle, DateTime entered, DateTime left)
+        {
+            var chargedTime = ChargedTime(cityName, vehicle, entered, left);
 
             double totalCharge = 0;
             foreach (var charge in chargedTime)
@@ -263,6 +265,43 @@ namespace DrivingChargesApi.Charges.Congestions
             .FirstOrDefault();
 
         //#####################
-        
+        public List<ChargedTimeData> WeekDayData(string cityName, string vehicle, DateTime entered, DateTime left)
+        {
+            var weekDayData = new List<ChargedTimeData>();
+            var weekDayPeriods = Periods(cityName, "WeekDay");
+
+            foreach (var period in weekDayPeriods)
+            {
+                weekDayData.Add(new ChargedTimeData()
+                {
+                    CongestionType = "WeekDay",
+                    PeriodStart = period.Start,
+                    TimeSpent = TimeSpentWeekDay(entered, left, period.Start, period.End),
+                    ChargeAmount = ChargeAmount(cityName, "WeekDay", period.PeriodId, vehicle)
+                });
+            }
+
+            return weekDayData;
+        }
+
+        public List<ChargedTimeData> WeekEndData(string cityName, string vehicle, DateTime entered, DateTime left)
+        {
+            var weekEndData = new List<ChargedTimeData>();
+            var weekEndPeriods = Periods(cityName, "WeekEnd");
+
+            foreach (var period in weekEndPeriods)
+            {
+                weekEndData.Add(new ChargedTimeData()
+                {
+                    CongestionType = "WeekEnd",
+                    PeriodStart = period.Start,
+                    TimeSpent = TimeSpentWeekEnd(entered, left, period.Start, period.End),
+                    ChargeAmount = ChargeAmount(cityName, "WeekEnd", period.PeriodId, vehicle)
+                });
+            }
+
+            return weekEndData;
+        }
+
     }
 }
