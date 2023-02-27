@@ -1,8 +1,13 @@
-﻿namespace DrivingChargesApi.Charges.Data.CongestionData
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DrivingChargesApi.Charges.Data.CongestionData
 {
     public class Period
     {
         public int PeriodId { get; set; }
+
+        [MaxLength(30)]
+        public string Type { get; set; }
 
         public TimeSpan Start { get; set; }
 

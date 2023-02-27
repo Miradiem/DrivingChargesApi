@@ -1,14 +1,13 @@
 ﻿namespace DrivingChargesApi.Charges.Congestions
 {
-    public class ChargedTimeData
+    public class ChargedTime
     {
         public string CongestionType { get; set; }
 
-        public TimeSpan PeriodStart { get; set; }
+        public string PeriodType { get; set; }
 
         public TimeSpan TimeSpent { get; set; }
 
         public double ChargeAmount { get; set; }
-        
     }
 }

@@ -54,6 +54,7 @@ namespace DrivingChargesApi.Charges.Data
                 new Period
                 {
                     PeriodId = 1,
+                    Type = "Am",
                     Start = new(07, 00, 00),
                     End = new(12, 00, 00),
                     Coefficient = 1,
@@ -85,6 +86,7 @@ namespace DrivingChargesApi.Charges.Data
                new Period
                {
                     PeriodId = 2,
+                    Type = "Pm",
                     Start = new(12, 00, 00),
                     End = new(19, 00, 00),
                     Coefficient = 1,

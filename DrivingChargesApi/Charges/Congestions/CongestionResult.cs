@@ -1,4 +1,6 @@
-﻿namespace DrivingChargesApi.Charges.Congestions
+﻿using static DrivingChargesApi.Charges.Congestions.CongestionCharge;
+
+namespace DrivingChargesApi.Charges.Congestions
 {
     public class CongestionResult
     {
@@ -10,7 +12,7 @@
 
         public DateTime Left { get; set; } 
 
-        public List<ChargedTimeData> ChargedTimeData { get; set; } = new();
+        public List<ChargedTime> ChargedTime{ get; set; } = new();
 
         public double TotalCharge { get; set; }
     }
