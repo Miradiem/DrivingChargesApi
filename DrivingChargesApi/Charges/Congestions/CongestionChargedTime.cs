@@ -1,6 +1,6 @@
 ﻿namespace DrivingChargesApi.Charges.Congestions
 {
-    public class ChargedTime
+    public class CongestionChargedTime
     {
         public string CongestionType { get; set; }
 

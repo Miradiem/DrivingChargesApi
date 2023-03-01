@@ -4,7 +4,7 @@ namespace DrivingChargesApi.Charges.Data.CongestionData
 {
     public class Vehicle
     {
-        public int VehicleId { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(30)]
         public string Type { get; set; }
