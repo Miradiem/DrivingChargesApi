@@ -10,7 +10,7 @@
 
         public DateTime Left { get; set; } 
 
-        public List<CongestionChargedTime> ChargedTime{ get; set; } = new();
+        public List<CongestionChargedPeriods> ChargedTime{ get; set; } = new();
 
         public double TotalCharge { get; set; }
     }

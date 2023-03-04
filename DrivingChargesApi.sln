@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivingChargesApi", "DrivingChargesApi\DrivingChargesApi.csproj", "{8EAB462B-AA8D-43E4-B49B-26AA1125ED00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrivingChargesApi", "DrivingChargesApi\DrivingChargesApi.csproj", "{8EAB462B-AA8D-43E4-B49B-26AA1125ED00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivingChargesApi.Tests", "DrivingChargesApi.Tests\DrivingChargesApi.Tests.csproj", "{57D1BA2C-18D8-4D7D-AE27-23A3F55EECEB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8EAB462B-AA8D-43E4-B49B-26AA1125ED00} = {8EAB462B-AA8D-43E4-B49B-26AA1125ED00}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{8EAB462B-AA8D-43E4-B49B-26AA1125ED00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EAB462B-AA8D-43E4-B49B-26AA1125ED00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EAB462B-AA8D-43E4-B49B-26AA1125ED00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57D1BA2C-18D8-4D7D-AE27-23A3F55EECEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57D1BA2C-18D8-4D7D-AE27-23A3F55EECEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57D1BA2C-18D8-4D7D-AE27-23A3F55EECEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57D1BA2C-18D8-4D7D-AE27-23A3F55EECEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

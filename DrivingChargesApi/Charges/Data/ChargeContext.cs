@@ -76,15 +76,15 @@ namespace DrivingChargesApi.Charges.Data
                     CongestionId = 1
                 });
             modelBuilder.Entity<Period>().HasData(
-              new Period
-              {
-                  Id = 3,
-                  Type = "Am",
-                  Start = new(07, 00, 00),
-                  End = new(12, 00, 00),
-                  Coefficient = 1,
-                  CongestionId = 2
-              });
+                new Period
+                {
+                    Id = 3,
+                    Type = "Am",
+                    Start = new(07, 00, 00),
+                    End = new(12, 00, 00),
+                    Coefficient = 1,
+                    CongestionId = 2
+                });
             modelBuilder.Entity<Period>().HasData(
                 new Period
                 {
@@ -167,21 +167,21 @@ namespace DrivingChargesApi.Charges.Data
                    Id = 10,
                    Type = "Car",
                    Rate = 4.5,
-                   PeriodId = 2
+                   PeriodId = 4
                },
                new Vehicle
                {
                    Id = 11,
                    Type = "Van",
                    Rate = 5.5,
-                   PeriodId = 2
+                   PeriodId = 4
                },
                new Vehicle
                {
                    Id = 12,
                    Type = "Motorbike",
                    Rate = 2,
-                   PeriodId = 2
+                   PeriodId = 4
                });
         }
     }

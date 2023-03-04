@@ -12,38 +12,68 @@ namespace DrivingChargesApi.Charges.Congestions
         {
             _context = context;
         }
-        public Dictionary<string, List<Period>> PeriodData(string cityName) =>
-            _context.Cities
+
+        public async Task<List<string>> CongestionTypes(string cityName) =>
+           await _context.Cities
+                .Include(city => city.Congestions)
+            .Where(city => city.Name == cityName)
+                .SelectMany(city => city.Congestions)
+                .Select(congestion => congestion.Type)
+            .ToListAsync();
+
+        public async Task<Dictionary<string, List<Period>>> PeriodData(string cityName) =>
+            await _context.Cities
             .Include(city => city.Congestions)
                 .ThenInclude(congestion => congestion.Periods)
             .Where(city => city.Name == cityName)
-            .SelectMany(city => city.Congestions)
-            .ToDictionary(congestion => congestion.Type,
+                .SelectMany(city => city.Congestions)
+            .ToDictionaryAsync(congestion => congestion.Type,
                 congestion => congestion.Periods.ToList());
 
-        public double Tariff(
-            string cityName, string congestionType,int periodId, string vehicleType) =>
-            _context.Cities
-            .Where(city => city.Name == cityName)
-            .Select(city => city.Coefficient)
-            .Concat(_context.Congestions
-                .Where(congestion => congestion.Type == congestionType)
-                .Select(congestion => congestion.Coefficient))
-            .Concat(_context.Periods
-                .Where(period => period.Id == periodId)
-                .Select(period => period.Coefficient))
-            .Concat(_context.Vehicles
-                .Where(vehicle => vehicle.Type == vehicleType)
-                .Select(vehicle => vehicle.Rate))
-            .DefaultIfEmpty(0)
-            .Aggregate((x, y) => x * y);
+        public async Task<double> Tariff(
+            string cityName, string congestionType,int periodId, string vehicleType)
+        {
+            var coefficients = await _context.Cities
+                .Where(city => city.Name == cityName)
+                    .Select(city => city.Coefficient)
+                .ToListAsync();
 
-        public List<string> CongestionTypes(string cityName) =>
-            _context.Cities
-            .Include(city => city.Congestions)
-            .Where(city => city.Name == cityName)
-            .SelectMany(city => city.Congestions)
-            .Select(congestion => congestion.Type)
-            .ToList();    
+            coefficients.AddRange(
+                await _context.Cities
+                    .Include(city => city.Congestions)
+                .Where(city => city.Name == cityName)
+                    .SelectMany(city => city.Congestions)
+                .Where(congestion => congestion.Type == congestionType)
+                    .Select(congestion => congestion.Coefficient)
+                .ToListAsync());
+
+            coefficients.AddRange(
+                await _context.Cities
+                    .Include(city => city.Congestions)
+                        .ThenInclude(congestion => congestion.Periods)
+                .Where(city => city.Name == cityName)
+                    .SelectMany(city => city.Congestions)
+                .Where(congestion => congestion.Type == congestionType)
+                    .SelectMany(congestion => congestion.Periods)
+                .Where(period => period.Id == periodId)
+                    .Select(period => period.Coefficient)
+                .ToListAsync());
+
+            coefficients.AddRange(
+                await _context.Cities
+                    .Include(city => city.Congestions)
+                        .ThenInclude(congestion => congestion.Periods)
+                .Where(city => city.Name == cityName)
+                    .SelectMany(city => city.Congestions)
+                .Where(congestion => congestion.Type == congestionType)
+                    .SelectMany(congestion => congestion.Periods)
+                .Where(period => period.Id == periodId)
+                    .SelectMany(period => period.Vehicles)
+                .Where(vehicle => vehicle.Type == vehicleType)
+                    .Select(vehicle => vehicle.Rate)
+                .ToListAsync());
+
+            return coefficients.DefaultIfEmpty(0).Aggregate((x, y) => x * y);
+        }
     }
 }

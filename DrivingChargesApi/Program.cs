@@ -1,3 +1,4 @@
+using DrivingChargesApi.Charges.Congestions;
 using DrivingChargesApi.Charges.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +10,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ChargeContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-});
+
+var connectionString = builder.Configuration.GetConnectionString("Default");
+builder.Services
+    .AddScoped<CongestionRepository>()
+    .AddDbContext<ChargeContext>(options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
