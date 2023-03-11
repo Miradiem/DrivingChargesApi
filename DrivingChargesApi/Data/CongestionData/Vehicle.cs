@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DrivingChargesApi.Charges.Data.CongestionData
+namespace DrivingChargesApi.Data.CongestionData
 {
     public class Vehicle
     {

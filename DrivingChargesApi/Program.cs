@@ -1,11 +1,13 @@
-using DrivingChargesApi.Charges.Congestions;
-using DrivingChargesApi.Charges.Data;
+using DrivingChargesApi.CongestionCharges;
+using DrivingChargesApi.Data;
+using DrivingChargesApi.Validation;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddValidatorsFromAssemblyContaining<CongestionValidator>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -15,6 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services
     .AddScoped<CongestionRepository>()
     .AddDbContext<ChargeContext>(options => options.UseSqlServer(connectionString));
+
 
 var app = builder.Build();
 

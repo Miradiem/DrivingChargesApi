@@ -1,8 +1,8 @@
-﻿using DrivingChargesApi.Charges.Data;
-using DrivingChargesApi.Charges.Data.CongestionData;
+﻿using DrivingChargesApi.Data;
+using DrivingChargesApi.Data.CongestionData;
 using Microsoft.EntityFrameworkCore;
 
-namespace DrivingChargesApi.Charges.Congestions
+namespace DrivingChargesApi.CongestionCharges
 {
     public class CongestionRepository
     {
@@ -12,14 +12,6 @@ namespace DrivingChargesApi.Charges.Congestions
         {
             _context = context;
         }
-
-        public async Task<List<string>> CongestionTypes(string cityName) =>
-           await _context.Cities
-                .Include(city => city.Congestions)
-            .Where(city => city.Name == cityName)
-                .SelectMany(city => city.Congestions)
-                .Select(congestion => congestion.Type)
-            .ToListAsync();
 
         public async Task<Dictionary<string, List<Period>>> PeriodData(string cityName) =>
             await _context.Cities

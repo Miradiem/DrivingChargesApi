@@ -1,4 +1,4 @@
-﻿namespace DrivingChargesApi.Charges.Data.UltraLowEmissionData
+﻿namespace DrivingChargesApi.Data.UltraLowEmissionData
 {
     public class UltraLowEmission
     {

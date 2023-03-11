@@ -1,4 +1,4 @@
-﻿namespace DrivingChargesApi.Charges.Data.LowEmissionData
+﻿namespace DrivingChargesApi.Data.LowEmissionData
 {
     public class LowEmission
     {

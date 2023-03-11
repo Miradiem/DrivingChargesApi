@@ -1,4 +1,4 @@
-﻿namespace DrivingChargesApi.Charges.Congestions
+﻿namespace DrivingChargesApi.CongestionCharges
 {
     public class CongestionChargedPeriods
     {

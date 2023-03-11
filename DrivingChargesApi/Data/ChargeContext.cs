@@ -1,9 +1,9 @@
-﻿using DrivingChargesApi.Charges.Data.CongestionData;
-using DrivingChargesApi.Charges.Data.LowEmissionData;
-using DrivingChargesApi.Charges.Data.UltraLowEmissionData;
+﻿using DrivingChargesApi.Data.CongestionData;
+using DrivingChargesApi.Data.LowEmissionData;
+using DrivingChargesApi.Data.UltraLowEmissionData;
 using Microsoft.EntityFrameworkCore;
 
-namespace DrivingChargesApi.Charges.Data
+namespace DrivingChargesApi.Data
 {
     public class ChargeContext : DbContext
     {

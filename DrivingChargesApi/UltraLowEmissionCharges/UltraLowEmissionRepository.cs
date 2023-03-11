@@ -1,4 +1,4 @@
-﻿namespace DrivingChargesApi.Charges.UltraLowEmissions
+﻿namespace DrivingChargesApi.UltraLowEmissionCharges
 {
     public class UltraLowEmissionRepository
     {
