@@ -15,28 +15,40 @@ namespace DrivingChargesApi.CongestionCharges
 
         public async Task<List<CongestionChargedPeriods>> ChargedPeriods()
         {
+            var cityName = _congestionQuery.CityName;
+            var vehicleType = _congestionQuery.VehicleType;
+            var congestionTypes = await _congestionRepository.CongestionTypes(cityName);
+
             var chargedPeriods = new List<CongestionChargedPeriods>();
-;
-            chargedPeriods.AddRange(await WeekDays());
-            chargedPeriods.AddRange(await WeekEnds());
-                
+            foreach (var congestionType in congestionTypes)
+            {
+                if (congestionType == "WeekDay")
+                {
+                    var weekDays = await WeekDays(cityName, vehicleType, congestionType);
+                    chargedPeriods.AddRange(weekDays);
+                }
+                if (congestionType == "WeekEnd")
+                {
+                    var weekEnds = await WeekEnds(cityName, vehicleType, congestionType);
+                    chargedPeriods.AddRange(weekEnds);
+                }
+            };
+
             return chargedPeriods;
         }
 
-        private async Task<List<CongestionChargedPeriods>> WeekDays()
+        private async Task<List<CongestionChargedPeriods>> WeekDays(
+            string cityName, string vehicleType, string congestionType)
         {
-            var cityName = _congestionQuery.CityName;
-            var vehicleType = _congestionQuery.VehicleType;
             var periodData = await _congestionRepository.PeriodData(cityName);
-            var congestionType = "WeekDay";
             var periods = periodData[congestionType];
 
             var chargedPeriods = new List<CongestionChargedPeriods>();
-
             foreach (var period in periods)
             {
                 var timeSpentWeekDay = TimeSpentWeekDay(period.Start, period.End);
-                var tariff = await _congestionRepository.Tariff(cityName, congestionType, period.Id, vehicleType);
+                var tariff = await _congestionRepository.Tariff(
+                    cityName, congestionType, period.Id, vehicleType);
                 var chargeAmount = timeSpentWeekDay.TotalHours * tariff;
 
                 chargedPeriods.Add(new CongestionChargedPeriods()
@@ -53,12 +65,12 @@ namespace DrivingChargesApi.CongestionCharges
 
         private TimeSpan TimeSpentWeekDay(TimeSpan periodStart, TimeSpan periodEnd)
         {
-            var entered = _congestionQuery.Entered.Date;
-            var left = _congestionQuery.Left.Date;
+            var entered = _congestionQuery.Entered;
+            var left = _congestionQuery.Left;
 
             TimeSpan minutes = new();
 
-            for (DateTime date = entered; date <= left; date = date.AddDays(1))
+            for (DateTime date = entered.Date; date <= left.Date; date = date.AddDays(1))
             {
                 if (date.DayOfWeek >= DayOfWeek.Monday && date.DayOfWeek <= DayOfWeek.Friday)
                 {
@@ -77,16 +89,13 @@ namespace DrivingChargesApi.CongestionCharges
             return minutes;
         }
 
-        private async Task<List<CongestionChargedPeriods>> WeekEnds()
+        private async Task<List<CongestionChargedPeriods>> WeekEnds(
+            string cityName, string vehicleType, string congestionType)
         {
-            var cityName = _congestionQuery.CityName;
-            var vehicleType = _congestionQuery.VehicleType;
             var periodData = await _congestionRepository.PeriodData(cityName);
-            var congestionType = "WeekEnd";
             var periods = periodData[congestionType];
 
             var chargedPeriods = new List<CongestionChargedPeriods>();
-
             foreach (var period in periods)
             {
                 var timeSpentWeekEnd = TimeSpentWeekEnd(period.Start, period.End);
@@ -107,12 +116,12 @@ namespace DrivingChargesApi.CongestionCharges
 
         private TimeSpan TimeSpentWeekEnd(TimeSpan periodStart, TimeSpan periodEnd)
         {
-            var entered = _congestionQuery.Entered.Date;
-            var left = _congestionQuery.Left.Date;
+            var entered = _congestionQuery.Entered;
+            var left = _congestionQuery.Left;
 
             TimeSpan minutes = new();
 
-            for (DateTime date = entered; date <= left; date = date.AddDays(1))
+            for (DateTime date = entered.Date; date <= left.Date; date = date.AddDays(1))
             {
                 if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
                 {

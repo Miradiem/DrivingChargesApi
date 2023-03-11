@@ -13,6 +13,14 @@ namespace DrivingChargesApi.CongestionCharges
             _context = context;
         }
 
+        public async Task<List<string>> CongestionTypes(string cityName) =>
+           await _context.Cities
+                .Include(city => city.Congestions)
+            .Where(city => city.Name == cityName)
+                .SelectMany(city => city.Congestions)
+                .Select(congestion => congestion.Type)
+            .ToListAsync();
+
         public async Task<Dictionary<string, List<Period>>> PeriodData(string cityName) =>
             await _context.Cities
             .Include(city => city.Congestions)

@@ -27,8 +27,6 @@ namespace DrivingChargesApi.CongestionCharges
                 ChargedPeriods = chargedPeriods,
                 TotalCharge = totalCharge
             };
-        }
-
-        
+        }  
     }
 }

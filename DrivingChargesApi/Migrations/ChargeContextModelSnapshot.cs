@@ -22,7 +22,7 @@ namespace DrivingChargesApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.City", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +51,7 @@ namespace DrivingChargesApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Congestion", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Congestion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace DrivingChargesApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Period", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Period", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,7 +163,7 @@ namespace DrivingChargesApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Vehicle", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Vehicle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,7 +275,7 @@ namespace DrivingChargesApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.LowEmissionData.LowEmission", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.LowEmissionData.LowEmission", b =>
                 {
                     b.Property<int>("LowEmissionId")
                         .ValueGeneratedOnAdd()
@@ -296,7 +296,7 @@ namespace DrivingChargesApi.Migrations
                     b.ToTable("LowEmissions");
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.UltraLowEmissionData.UltraLowEmission", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.UltraLowEmissionData.UltraLowEmission", b =>
                 {
                     b.Property<int>("UltraLowEmissionId")
                         .ValueGeneratedOnAdd()
@@ -317,52 +317,52 @@ namespace DrivingChargesApi.Migrations
                     b.ToTable("UltraLowEmissions");
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Congestion", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Congestion", b =>
                 {
-                    b.HasOne("DrivingChargesApi.Charges.Data.City", null)
+                    b.HasOne("DrivingChargesApi.Data.City", null)
                         .WithMany("Congestions")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Period", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Period", b =>
                 {
-                    b.HasOne("DrivingChargesApi.Charges.Data.CongestionData.Congestion", null)
+                    b.HasOne("DrivingChargesApi.Data.CongestionData.Congestion", null)
                         .WithMany("Periods")
                         .HasForeignKey("CongestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Vehicle", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Vehicle", b =>
                 {
-                    b.HasOne("DrivingChargesApi.Charges.Data.CongestionData.Period", null)
+                    b.HasOne("DrivingChargesApi.Data.CongestionData.Period", null)
                         .WithMany("Vehicles")
                         .HasForeignKey("PeriodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.LowEmissionData.LowEmission", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.LowEmissionData.LowEmission", b =>
                 {
-                    b.HasOne("DrivingChargesApi.Charges.Data.City", null)
+                    b.HasOne("DrivingChargesApi.Data.City", null)
                         .WithMany("LowEmissions")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.UltraLowEmissionData.UltraLowEmission", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.UltraLowEmissionData.UltraLowEmission", b =>
                 {
-                    b.HasOne("DrivingChargesApi.Charges.Data.City", null)
+                    b.HasOne("DrivingChargesApi.Data.City", null)
                         .WithMany("UltraLowEmissions")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.City", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.City", b =>
                 {
                     b.Navigation("Congestions");
 
@@ -371,12 +371,12 @@ namespace DrivingChargesApi.Migrations
                     b.Navigation("UltraLowEmissions");
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Congestion", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Congestion", b =>
                 {
                     b.Navigation("Periods");
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Charges.Data.CongestionData.Period", b =>
+            modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Period", b =>
                 {
                     b.Navigation("Vehicles");
                 });
