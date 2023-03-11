@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DrivingChargesApi.Tests.Charges.Congestions
+namespace DrivingChargesApi.Tests.CongestionCharges
 {
-    internal class CongestionControllerTests
+    public class CongestionControllerTests
     {
     }
 }
