@@ -1,33 +1,94 @@
-﻿using DrivingChargesApi.Tests.Data;
-using System;
+﻿using DrivingChargesApi.CongestionCharges;
+using DrivingChargesApi.Data;
+using DrivingChargesApi.Data.CongestionData;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Moq;
-using DrivingChargesApi.Data;
-using DrivingChargesApi.CongestionCharges;
-using DrivingChargesApi.Data.CongestionData;
-using Microsoft.EntityFrameworkCore;
-using FluentAssertions;
 
 namespace DrivingChargesApi.Tests.CongestionCharges
 {
     public class CongestionRepositoryTests
     {
-        private readonly Mock<ChargeContext> _chargeContextMock;
+        private readonly DbContextOptions<ChargeContext> _options;
+        private readonly ChargeContext _context;
         private readonly CongestionRepository _congestionRepository;
 
         public CongestionRepositoryTests()
         {
-            _chargeContextMock = new Mock<ChargeContext>();
-            _congestionRepository = new CongestionRepository(_chargeContextMock.Object);
+            _options = new DbContextOptionsBuilder<ChargeContext>()
+                .UseInMemoryDatabase(databaseName: "ChargesDataBase")
+                .Options;
+            _context = new ChargeContext(_options);
+            _congestionRepository = new CongestionRepository(_context);
+            _ = CreateSut("London");
         }
 
         [Fact]
-        public async void ShouldGetCongestionTypes()
+        public async Task ShouldGetCongestionTypes()
         {
+            var cityName = "London";
+            var congestionType = "WeekDay";
+
+            var result = await _congestionRepository.CongestionTypes(cityName);
+
+            result.Should().Contain(congestionType);
+        }
+
+        [Fact]
+        public async Task ShouldGetPeriodData()
+        {
+            var cityName = "London";
+            var congestionType = "WeekDay";
+            var periodType = "Am";
+
+            var result = await _congestionRepository.PeriodData(cityName);
+
+            result[congestionType].Should().Contain(property => property.Type == periodType);
+        }
+
+        [Fact]
+        public async Task ShouldGetTariff()
+        {
+            var cityName = "London";
+            var congestionType = "WeekDay";
+            var periodId = 1;
+            var vehicleType = "Car";
+
+            var result = await _congestionRepository.Tariff(
+                cityName, congestionType, periodId, vehicleType);
+
+            result.Should().Be(10);
+        }
+
+        private async Task CreateSut(string cityName)
+        {
+            var vehicles = new List<Vehicle>()
+            {
+                new Vehicle
+                {
+                    Id = 1,
+                    Type = "Car",
+                    Rate = 10,
+                    PeriodId = 1
+                }
+            };
+
+            var periods = new List<Period>()
+            {
+                new Period
+                {
+                    Id = 1,
+                    Type = "Am",
+                    Start = new(),
+                    End = new(),
+                    Coefficient = 1,
+                    CongestionId = 1,
+                    Vehicles = vehicles
+                }
+            };
+
             var congestions = new List<Congestion>()
             {
                 new Congestion
@@ -36,25 +97,25 @@ namespace DrivingChargesApi.Tests.CongestionCharges
                     Type = "WeekDay",
                     Coefficient = 1,
                     CityId = 1,
-                    Periods = new()
-                },
-                new Congestion
-                {
-                    Id = 2,
-                    Type = "WeekEnd",
-                    Coefficient = 1,
-                    CityId = 1,
-                    Periods = new()
+                    Periods = periods
                 }
             };
 
-            _chargeContextMock.Setup(m => m.Congestions.ToList()).Returns(congestions);
+            var cities = new List<City>()
+            {
+                new City
+                {
+                    Id = 1,
+                    Name = cityName,
+                    Coefficient = 1,
+                    Congestions = congestions,
+                    LowEmissions = new(),
+                    UltraLowEmissions= new()
+                }
+            };
 
-            var cityName = "London";
-            var result = await _congestionRepository.CongestionTypes(cityName);
-
-            result.Should().Contain("WeekDay");
-            result.Should().Contain("WeekEnd");
+            await _context.Cities.AddRangeAsync(cities);
+            await _context.SaveChangesAsync();
         }
     }
 }
