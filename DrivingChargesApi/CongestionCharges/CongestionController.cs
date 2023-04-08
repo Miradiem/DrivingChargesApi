@@ -19,7 +19,7 @@ namespace DrivingChargesApi.CongestionCharges
 
         // GET: api/<CongestionController>
         [HttpGet]
-        public async Task<IActionResult> GetCongestionResult([FromQuery]CongestionQuery query)
+        public async Task<IActionResult> GetCongestionCharge([FromQuery]CongestionQuery query)
         {
             var congestionValidation = await _congestionValidator.ValidateAsync(query);
             if (congestionValidation.IsValid is false)
