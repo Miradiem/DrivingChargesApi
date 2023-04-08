@@ -33,12 +33,12 @@ namespace DrivingChargesApi.CongestionCharges
             }
 
             var taxation = new CongestionTaxation(
-                _congestionRepository,
+                _congestionRepository);
+            var congestionCharge = await taxation.GetCongestionCharge(
                 query.CityName,
                 query.VehicleType,
                 query.Entered,
                 query.Left);
-            var congestionCharge = await taxation.GetCongestionCharge();
 
             return Ok(congestionCharge);
         }

@@ -22,7 +22,7 @@ namespace DrivingChargesApi.Tests.CongestionCharges
                 .Options;
             _context = new ChargeContext(_options);
             _congestionRepository = new CongestionRepository(_context);
-            _ = CreateSut("London");
+            _ = CreateTestData("London");
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace DrivingChargesApi.Tests.CongestionCharges
             result.Should().Be(10);
         }
 
-        private async Task CreateSut(string cityName)
+        private async Task CreateTestData(string cityName)
         {
             var vehicles = new List<Vehicle>()
             {
