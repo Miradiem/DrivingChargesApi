@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DrivingChargesApi.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDbCreation : Migration
+    public partial class ChargesDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,46 +42,6 @@ namespace DrivingChargesApi.Migrations
                     table.PrimaryKey("PK_Congestions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Congestions_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LowEmissions",
-                columns: table => new
-                {
-                    LowEmissionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Coefficient = table.Column<double>(type: "float", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LowEmissions", x => x.LowEmissionId);
-                    table.ForeignKey(
-                        name: "FK_LowEmissions_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UltraLowEmissions",
-                columns: table => new
-                {
-                    UltraLowEmissionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Coefficient = table.Column<double>(type: "float", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UltraLowEmissions", x => x.UltraLowEmissionId);
-                    table.ForeignKey(
-                        name: "FK_UltraLowEmissions_Cities_CityId",
                         column: x => x.CityId,
                         principalTable: "Cities",
                         principalColumn: "Id",
@@ -182,19 +142,9 @@ namespace DrivingChargesApi.Migrations
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LowEmissions_CityId",
-                table: "LowEmissions",
-                column: "CityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Periods_CongestionId",
                 table: "Periods",
                 column: "CongestionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UltraLowEmissions_CityId",
-                table: "UltraLowEmissions",
-                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_PeriodId",
@@ -205,12 +155,6 @@ namespace DrivingChargesApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "LowEmissions");
-
-            migrationBuilder.DropTable(
-                name: "UltraLowEmissions");
-
             migrationBuilder.DropTable(
                 name: "Vehicles");
 

@@ -2,9 +2,9 @@
 {
     public class CongestionCharge
     {
-        public string City { get; set; }
+        public string City { get; set; } = "";
 
-        public string Vehicle { get; set; }
+        public string Vehicle { get; set; } = "";
 
         public DateTime Entered { get; set; }
 

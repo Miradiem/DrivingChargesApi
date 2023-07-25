@@ -1,6 +1,4 @@
-﻿using DrivingChargesApi.Validation;
-
-namespace DrivingChargesApi.CongestionCharges
+﻿namespace DrivingChargesApi.CongestionCharges
 {
     public class CongestionTaxation
     {
@@ -44,8 +42,7 @@ namespace DrivingChargesApi.CongestionCharges
                     var weekEnds = await WeekEnds(cityName, vehicleType, entered, left, congestionType);
                     chargedPeriods.AddRange(weekEnds);
                 }
-            };
-
+            }
             return chargedPeriods;
         }
 

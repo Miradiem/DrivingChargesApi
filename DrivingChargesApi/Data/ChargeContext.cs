@@ -1,6 +1,4 @@
 ﻿using DrivingChargesApi.Data.CongestionData;
-using DrivingChargesApi.Data.LowEmissionData;
-using DrivingChargesApi.Data.UltraLowEmissionData;
 using Microsoft.EntityFrameworkCore;
 
 namespace DrivingChargesApi.Data
@@ -18,10 +16,6 @@ namespace DrivingChargesApi.Data
         public DbSet<Period> Periods { get; set; }
 
         public DbSet<Vehicle> Vehicles { get; set; }
-
-        public DbSet<LowEmission> LowEmissions { get; set; }
-
-        public DbSet<UltraLowEmission> UltraLowEmissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,6 +1,7 @@
 ﻿using DrivingChargesApi.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace DrivingChargesApi.CongestionCharges
 {
@@ -32,15 +33,15 @@ namespace DrivingChargesApi.CongestionCharges
                 }));
             }
 
-            var taxation = new CongestionTaxation(
-                _congestionRepository);
-            var congestionCharge = await taxation.GetCongestionCharge(
+            var congestionCharge = await new CongestionTaxation(_congestionRepository)
+                .GetCongestionCharge(
                 query.CityName,
                 query.VehicleType,
                 query.Entered,
                 query.Left);
+            var jsonResult = JsonSerializer.Serialize(congestionCharge);
 
-            return Ok(congestionCharge);
+            return Ok(jsonResult);
         }
     }
 }

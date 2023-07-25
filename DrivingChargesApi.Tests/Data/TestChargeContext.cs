@@ -67,9 +67,7 @@ namespace DrivingChargesApi.Tests.Data
                     Id = 1,
                     Name = cityName,
                     Coefficient = 1,
-                    Congestions = congestions,
-                    LowEmissions = new(),
-                    UltraLowEmissions= new()
+                    Congestions = congestions
                 }
             };
 

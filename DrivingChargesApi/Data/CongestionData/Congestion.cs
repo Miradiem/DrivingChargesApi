@@ -7,7 +7,7 @@ namespace DrivingChargesApi.Data.CongestionData
         public int Id { get; set; }
 
         [MaxLength(30)]
-        public string Type { get; set; }
+        public string Type { get; set; } = "";
 
         public double Coefficient { get; set; }
 

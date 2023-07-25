@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrivingChargesApi.Migrations
 {
     [DbContext(typeof(ChargeContext))]
-    [Migration("20230311082551_InitialDbCreation")]
-    partial class InitialDbCreation
+    [Migration("20230724131358_ChargesDataBase")]
+    partial class ChargesDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -278,48 +278,6 @@ namespace DrivingChargesApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Data.LowEmissionData.LowEmission", b =>
-                {
-                    b.Property<int>("LowEmissionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LowEmissionId"));
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Coefficient")
-                        .HasColumnType("float");
-
-                    b.HasKey("LowEmissionId");
-
-                    b.HasIndex("CityId");
-
-                    b.ToTable("LowEmissions");
-                });
-
-            modelBuilder.Entity("DrivingChargesApi.Data.UltraLowEmissionData.UltraLowEmission", b =>
-                {
-                    b.Property<int>("UltraLowEmissionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UltraLowEmissionId"));
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Coefficient")
-                        .HasColumnType("float");
-
-                    b.HasKey("UltraLowEmissionId");
-
-                    b.HasIndex("CityId");
-
-                    b.ToTable("UltraLowEmissions");
-                });
-
             modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Congestion", b =>
                 {
                     b.HasOne("DrivingChargesApi.Data.City", null)
@@ -347,31 +305,9 @@ namespace DrivingChargesApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingChargesApi.Data.LowEmissionData.LowEmission", b =>
-                {
-                    b.HasOne("DrivingChargesApi.Data.City", null)
-                        .WithMany("LowEmissions")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DrivingChargesApi.Data.UltraLowEmissionData.UltraLowEmission", b =>
-                {
-                    b.HasOne("DrivingChargesApi.Data.City", null)
-                        .WithMany("UltraLowEmissions")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DrivingChargesApi.Data.City", b =>
                 {
                     b.Navigation("Congestions");
-
-                    b.Navigation("LowEmissions");
-
-                    b.Navigation("UltraLowEmissions");
                 });
 
             modelBuilder.Entity("DrivingChargesApi.Data.CongestionData.Congestion", b =>
